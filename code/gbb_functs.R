@@ -14,9 +14,7 @@ sample_graph <- function(graph) {
   p <- 2*(m - 2)*length(E(graph))/(m*(n - m)*n)
   index <- sample(1:n, k)
   count <- 1
-  
-  
-  
+
   ## individual block subgraphs
   blocks <- lapply(index, function(i) {
     ## get subgraph
@@ -39,7 +37,7 @@ sample_graph <- function(graph) {
   ## combine all subgraphs
   g_star <- do.call(graph_add, blocks)
   
-  ## TODO: add appropriate between block edges according to Bern(p)
+  ## add appropriate between block edges according to Bern(p)
   match_blocks <- expand.grid(x = 1:k, y = 1:k)
   match_blocks <- match_blocks[match_blocks$x < match_blocks$y, ]
   
@@ -74,7 +72,7 @@ gbb <- function(graph, B) {
   #for 1, ..., B get T*
   for(i in seq_len(B)) {
     graph_star <- sample_graph(graph)
-    T_star[i] <- length(E(graph_star))
+    T_star[i] <- sum(degree(graph))/length(V(graph))
   }
   return(T_star)
 }

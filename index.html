@@ -99,21 +99,37 @@
 <ul>
 <li>A graph \(G\) is a mathematical object that consists of a set of vertices (nodes), \(V(G)\) and a set of edges (links), \(E(G)\). Let \(e_{ij} \in E(G)\) denote the edge between vertices \(i, j \in V(G)\).</li>
 <li>Throughout, \(n = |V(G)|\) is the number of vertices in \(G\) and \(e = |E(G)|\) the number of edges.</li>
+<li>The <em>degree</em> of vertex \(i \in V(G)\), \(d_i\) is the number of edges that are connected to vertex \(i\).</li>
 <li>We consider <em>undirected</em> (\(e_{ij} = e_{ji}\)) and <em>loopless</em> (\(i \not= j \forall e_{ij} \in E(G)\)) graphs.</li>
 <li>The distance \(dist(i, j)\) is the minimum number of edges in a connected path from \(i\) to \(j\) in \(G\).</li>
-<li>The \(d\)th order neighborhood of a vertex \(i \in V(G)\) is defined as \[
-N_d(u, G) = \{j \in V(G): dist(i, j) \le d\}
-\]</li>
+<li>The \(d\)th order neighborhood of a vertex \(i \in V(G)\) is defined as \(N_d(u, G) = \{j \in V(G): dist(i, j) \le d\}\)</li>
 </ul>
 
 </article></slide><slide class=''><hgroup><h2>Neighborhoods</h2></hgroup><article  id="neighborhoods">
 
 <div>
 <p><span>
-d = </span> <select id="choose_d"> <option value="1" selected="selected">1</option> <option value="2">2</option> <option value="3">3</option> </select></p></div>
+d = </span> <select id="choose_d"> <option value="1" selected="selected">1</option> <option value="2">2</option> </select></p></div>
 
 <div id="graph_neighborhoods">
 </div>
+
+<p><span class="cite">(Martin 2011, <span class="cite">Cukier (2012)</span>)</span></p>
+
+</article></slide><slide class=''><hgroup><h2>Network inference</h2></hgroup><article  id="network-inference">
+
+<p>A complete description of a network and its topology is infeasible \(\Rightarrow\) we can study the statistics of a complex network (i.e., clustering coeffients, numbers of triangles, average degree, etc.)</p>
+
+<p>Let</p>
+
+<ul>
+<li>\(G\) be a hypothetical undirected random graph,</li>
+<li>\(F = \{f(k), k \ge 0\}\) the degree distribution of \(G\),</li>
+<li>\(G_n\) be an observed realization of \(G\) of order \(n\) s.t. as \(n \rightarrow \infty\), the joint degree distributions of \(G_n\) approach the joint degree distribution of \(G\).</li>
+<li>\(d_1, \dots, d_n\) be the observed degrees of the vertices in \(G_n\).</li>
+</ul>
+
+<p><strong>Goal</strong>: Estimate the population mean degree of \(G\), \(\mu(G)\) using a block boostrap.</p>
 
 </article></slide><slide class='segue dark nobackground'><hgroup class = 'auto-fadein'><h2>A snowball&#39;s chance&#8230;</h2></hgroup><article  id="a-snowballs-chance...">
 
@@ -131,7 +147,16 @@ d = </span> <select id="choose_d"> <option value="1" selected="selected">1</opti
 
 <script src="scripts/neighborhood.js"></script>
 
-<p><link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.4/themes/smoothness/jquery-ui.css"> <link rel="stylesheet" type="text/css" href="style/d3.css"></p></article></slide>
+<p><link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.4/themes/smoothness/jquery-ui.css"> <link rel="stylesheet" type="text/css" href="style/d3.css"></p>
+
+</article></slide><slide class=''><hgroup><h2>References</h2></hgroup><article  id="references" class="unnumbered">
+
+<div id="refs" class="references">
+<div id="ref-cukier2012got">
+<p>Cukier, Jerome. 2012. “Events in the Game of Thrones.” December. <a href='http://www.jeromecukier.net/projects/agot/events.html' title=''>http://www.jeromecukier.net/projects/agot/events.html</a>.</p></div>
+
+<div id="ref-martin2011dance">
+<p>Martin, George RR. 2011. <em>A Dance with Dragons</em>. New York, NY, USA: Bantam Books.</p></div></div></article></slide>
 
 
   <slide class="backdrop"></slide>

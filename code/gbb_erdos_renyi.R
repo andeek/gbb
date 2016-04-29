@@ -1,7 +1,7 @@
 ## libraries and functs ----------------
 library(igraph)
 library(dplyr)
-source("../gbb_functs.R")
+source("code/gbb_functs.R")
 
 ## run gbb -----------------------
 ## params
@@ -9,7 +9,7 @@ B <- 500
 const <- .5
 
 ## generate graphs
-data.frame(n = seq(10, 1000, length.out = 100)) %>%
+data.frame(n = seq(10, 1000, length.out = 20)) %>%
   mutate(e = round(const*n^(1.5))) %>%
   group_by(n, e) %>%
   do(graph = erdos.renyi.game(.$n, .$e, "gnm")) -> graphs

@@ -3,10 +3,9 @@
 //http://www.coppelia.io/2014/06/finding-neighbours-in-a-d3-force-directed-layout-2/
 
 var width = 960,
-    height = 450;
+    height = 440;
 
 var toggle = 0;
-var depth = +$('#choose_d').val();
 
 var color = d3.scale.category20();
 
@@ -72,35 +71,37 @@ d3.json("../data/got.json", function(error, graph) {
   }
 
   function connectedNodes() {
-
+    var depth = +$('#choose_d').val();
+    console.log(depth);
 
     if (toggle == 0) {
       var dat = d3.select(this).node().__data__;
       var connected = {};
-      if (depth === 2) {
-        var friends = graph.nodes.filter(function(o) { return neighboring(dat, o); });
+      if (depth == 2) {
+        var friends = graph.nodes.filter(function(o) { return neighboring(dat, o) | neighboring(o, dat); });
         friends.forEach(function(o) {
-          connected[o.name] = 1;
+          connected[o.v_name] = 1;
           // second pass to get second-degree neighbours
           graph.nodes.forEach(function(p) {
-            if(neighboring(o, p)) {
-              connected[p.name] = 1;
+            if(neighboring(o, p) | neighboring(p, o)) {
+              connected[p.v_name] = 1;
             }
           });
         });
       } else {
         graph.nodes.forEach(function(p) {
-          if(neighboring(dat, p)) {
-            connected[p.name] = 1;
+          if(neighboring(dat, p) | neighboring(p, dat)) {
+            console.log(p)
+            connected[p.v_name] = 1;
           }
         });
       }
 
-
+      console.log(connected);
 
 
       node.style("fill", function (o) {
-          return dat === o ? "orange" : connected[o.name] ? "red" : "steelblue";
+          return dat === o ? "orange" : connected[o.v_name] ? "red" : "steelblue";
       });
       toggle = 1;
     } else {
