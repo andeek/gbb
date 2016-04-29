@@ -1,0 +1,46 @@
+---
+title: "Block Bootstrap for Random Graphs"
+author: "Andee Kaplan"
+date: "May 3, 2016"
+output: 
+  ioslides_presentation
+---
+
+# Random graph stuff
+
+## Preliminaries and notation
+
+- A graph $G$ is a mathematical object that consists of a set of vertices (nodes), $V(G)$ and a set of edges (links), $E(G)$. Let $e_{ij} \in E(G)$ denote the edge between vertices $i, j \in V(G)$.
+- Throughout, $n = |V(G)|$ is the number of vertices in $G$ and  $e = |E(G)|$ the number of edges.
+- We consider *undirected* ($e_{ij} = e_{ji}$) and *loopless* ($i \not= j \forall e_{ij} \in E(G)$) graphs.
+- The distance $dist(i, j)$ is the minimum number of edges in a connected path from $i$ to $j$ in $G$.
+- The $d$th order neighborhood of a vertex $i \in V(G)$ is defined as
+    $$
+    N_d(u, G) = \{j \in V(G): dist(i, j) \le d\}
+    $$
+
+## Neighborhoods
+<div>
+<span>d = </span>
+<select id="choose_d">
+  <option value="1" selected="selected">1</option>
+  <option value="2">2</option>
+  <option value="3">3</option>
+</select>
+</div>
+<div id="graph_neighborhoods"></div>
+
+# A snowball's chance...
+
+# A simple idea
+
+# Properties
+
+# Simulated examples
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.2/jquery.min.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.4/jquery-ui.min.js"></script>
+<script src="http://d3js.org/d3.v3.min.js"></script>
+<script src="scripts/neighborhood.js"></script>
+<link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.4/themes/smoothness/jquery-ui.css">
+<link rel="stylesheet" type="text/css" href="style/d3.css">
