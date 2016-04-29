@@ -18,7 +18,7 @@ var svg = d3.select("#graph_neighborhoods").append("svg")
     .attr("width", width)
     .attr("height", height);
 
-d3.json("../data/got.json", function(error, graph) {
+d3.json("data/got.json", function(error, graph) {
   if (error) throw error;
 
   force
