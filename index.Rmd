@@ -2,7 +2,7 @@
 title: "Block Bootstrap for Random Graphs"
 author: "Andee Kaplan"
 date: "May 3, 2016"
-output: 
+output:
   ioslides_presentation
 bibliography: bibliography.bib
 ---
@@ -46,7 +46,26 @@ Let
 
 ## Overview
 
+Labelled Snowball with Multiple Inclusions
+
 ## Algorithm
+
+**Data**: graph $G_n$; number of seeds $m$, $m < n$; number of waves $d$  
+**Result**: sample of $m$ seeds with $d$ waves around each seed.  
+*seed* $=$ randomly sample without replacement $m$ vertices from $G_n$  
+**for** $q = 1, \dots, m$ **do**  
+&nbsp;&nbsp;&nbsp;&nbsp;start with original $G_n$ and $seed_q$  
+&nbsp;&nbsp;&nbsp;&nbsp;**for** $w = 1, \dots, d$ **do**  
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;$wave_w =$ select all immediate neighbors using the existing edges  
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;remove the used edges  
+&nbsp;&nbsp;&nbsp;&nbsp;**end**  
+&nbsp;&nbsp;&nbsp;&nbsp;$patch_q =$ join the current $seed_q$ and all $wave_w$ keeping the repeated elements  
+**end**  
+join all $m$ patches, keeping all of the repeated elements
+
+## Illustration
+<img src="images/lsmi_algorithm.png" height="500" />
+[@thompson2016using]
 
 ## Properties
 
