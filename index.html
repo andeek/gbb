@@ -80,7 +80,7 @@
 
 <body style="opacity: 0">
 
-<slides>
+<slides class="layout-widescreen">
 
   <slide class="title-slide segue nobackground">
         <!-- The content of this hgroup is replaced programmatically through the slide_config.json. -->
@@ -135,7 +135,24 @@ d = </span> <select id="choose_d"> <option value="1" selected="selected">1</opti
 
 </article></slide><slide class=''><hgroup><h2>Overview</h2></hgroup><article  id="overview">
 
-<p>Labelled Snowball with Multiple Inclusions</p>
+<ul>
+<li>&quot;Using the bootstrap for statistical inference on random graphs&quot;, Thompson, et. al. (2016)</li>
+<li><code>snowboot</code> package on CRAN</li>
+<li>Estimation of mean degree from a sample of vertices using a <em>patchwork</em> sampling method - &quot;labelled snowball sampling with multiple inclusions (LSMI)&quot;, from survey sampling</li>
+<li><em>seeds</em> \(=\) initial random sample of single vertices<br/> <em>patch</em> \(=\) formed by following paths of connected vertices emanating from the seed up to a certain distance<br/> <em>wave</em> \(=\) increments in distance<br/></li>
+<li>The degrees of all vertices visited in a patch are observed</li>
+<li>Boostrap <em>seeds</em> (randomly sample seeds with replacement and estimate the mean degree) or <em>non-seeds</em> (non-weighted or weighted selection)</li>
+</ul>
+
+</article></slide><slide class=''><hgroup><h2>Estimator</h2></hgroup><article  id="estimator" class="smaller">
+
+<p>\[T_n^* = \frac{\dfrac{1}{m}\sum_{q=1}^{m}d_q + D(1-\hat{p}_0)\dfrac{1}{m}\sum_{q=1}^m \tilde{A}_{NSq}}{\dfrac{1}{m}\sum_{q=1}^m 1 + D\dfrac{1}{m}\sum_{q=1}^m \tilde{B}_{NSq}}\]<br/>Where</p>
+
+<ul>
+<li>\(\hat{p}_0\) is the relative frequency of vertices of degree zero among the seeds,</li>
+<li>\(D\) is an arbitrary conbination factor depending on the degree distribution, for simplicity set \(D =\) the average degree of seeds.</li>
+<li>\(\tilde{A}_{NSq}\) and \(\tilde{B}_{NSq}\) are the wave-combined Horwitz-Thompson estimators of the sum of the degrees of all vertices in \(G_n\) and the number of vertices in \(G_n\) having positive degree, respectively.<br/> \[\tilde{A}_{NSq} = \sum\limits_{w = 1}^d \sum\limits_{j \in \text{ wave } w \text{ of } q} 1 \text{   and   } \tilde{B}_{NSq} = \sum\limits_{w = 1}^d \sum\limits_{j \in \text{ wave } w \text{ of } q} \frac{1}{d_j}\]</li>
+</ul>
 
 </article></slide><slide class=''><hgroup><h2>Algorithm</h2></hgroup><article  id="algorithm">
 
@@ -167,7 +184,7 @@ d = </span> <select id="choose_d"> <option value="1" selected="selected">1</opti
 
 <p><link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.4/themes/smoothness/jquery-ui.css"> <link rel="stylesheet" type="text/css" href="style/d3.css"></p>
 
-</article></slide><slide class=''><hgroup><h2>References</h2></hgroup><article  id="references" class="unnumbered">
+</article></slide><slide class=''><hgroup><h2>References</h2></hgroup><article  id="references" class="unnumbered smaller">
 
 <div id="refs" class="references">
 <div id="ref-cukier2012got">
