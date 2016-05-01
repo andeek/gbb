@@ -6,6 +6,8 @@ output:
   ioslides_presentation:
     widescreen: true
 bibliography: bibliography.bib
+nocite: |
+  @thompson2016using
 ---
 
 # Random graph stuff
@@ -41,33 +43,22 @@ Let
 - $G_n$ be an observed realization of $G$ of order $n$ s.t. as $n \rightarrow \infty$, the joint degree distributions of $G_n$ approach the joint degree distribution of $G$.
 - $d_1, \dots, d_n$ be the observed degrees of the vertices in $G_n$.
  
- **Goal**: Estimate the population mean degree of $G$, $\mu(G)$ using a block boostrap.
+ **Goal**: Estimate the population mean degree of $G$, $\mu(G)$ using a block bootstrap.
 
 # A snowball's chance...
 
 ## Overview
 
-- "Using the bootstrap for statistical inference on random graphs", Thompson, et. al. (2016)
-- `snowboot` package on CRAN
+- "Using the bootstrap for statistical inference on random graphs", Thompson, et. al. (2016); `snowboot` package on CRAN
 - Estimation of mean degree from a sample of vertices using a *patchwork* sampling method - "labelled snowball sampling with multiple inclusions (LSMI)", from survey sampling
 - *seeds* $=$ initial random sample of single vertices  
   *patch* $=$ formed by following paths of connected vertices emanating from the seed up to a certain distance  
   *wave* $=$ increments in distance  
 - The degrees of all vertices visited in a patch are observed
-- Boostrap *seeds* (randomly sample seeds with replacement and estimate the mean degree) or *non-seeds* (non-weighted or weighted selection)
-
-## Estimator {.smaller}
- 
-$$T_n^* = \frac{\dfrac{1}{m}\sum_{q=1}^{m}d_q + D(1-\hat{p}_0)\dfrac{1}{m}\sum_{q=1}^m \tilde{A}_{NSq}}{\dfrac{1}{m}\sum_{q=1}^m 1 + D\dfrac{1}{m}\sum_{q=1}^m \tilde{B}_{NSq}}$$  
-Where  
-
-- $\hat{p}_0$ is the relative frequency of vertices of degree zero among the seeds, 
-- $D$ is an arbitrary conbination factor depending on the degree distribution, for simplicity set $D =$ the average degree of seeds. 
-- $\tilde{A}_{NSq}$ and $\tilde{B}_{NSq}$ are the wave-combined Horwitz-Thompson estimators of the sum of the degrees of all vertices in $G_n$ and the number of vertices in $G_n$ having positive degree, respectively.  
-  $$\tilde{A}_{NSq} = \sum\limits_{w = 1}^d \sum\limits_{j \in \text{ wave } w \text{ of } q} 1 \text{   and   } \tilde{B}_{NSq} = \sum\limits_{w = 1}^d \sum\limits_{j \in \text{ wave } w \text{ of } q} \frac{1}{d_j}$$
+- bootstrap *seeds* (randomly sample seeds with replacement and estimate the mean degree) then *non-seeds* (non-weighted or weighted selection proportional to reciprocals of their degrees); repeat $T \times B$ bootstrap replications.
    
 
-## Algorithm
+## Sampling Algorithm {.smaller}
 
 **Data**: graph $G_n$; number of seeds $m$, $m < n$; number of waves $d$  
 **Result**: sample of $m$ seeds with $d$ waves around each seed.  
@@ -82,21 +73,56 @@ Where
 **end**  
 join all $m$ patches, keeping all of the repeated elements
 
-## Illustration
-<img src="images/lsmi_algorithm.png" height="500" />
-[@thompson2016using]
+Additionally, sample non-seeds according to *non-weighted* or *weighted* selection.
 
-## Properties
+Repeat $B$ times and calculate the estimate, $T_n^*$ for each replicate.
 
-# A simpler idea
+**Note:** The authors recommend running this procedure $T$ times to get $T$ bootstrap distributions because high variability among LSMIs
 
-## Overview
+## Estimator {.smaller}
+ 
+$$T_n^* = \frac{\dfrac{1}{m}\sum_{q=1}^{m}d_q + D(1-\hat{p}_0)\dfrac{1}{m}\sum_{q=1}^m \tilde{A}_{NSq}}{\dfrac{1}{m}\sum_{q=1}^m 1 + D\dfrac{1}{m}\sum_{q=1}^m \tilde{B}_{NSq}}$$  
+Where  
+
+- $\hat{p}_0$ is the relative frequency of vertices of degree zero among the seeds, 
+- $D$ is an arbitrary conbination factor depending on the degree distribution, for simplicity set $D =$ the average degree of seeds. 
+- $\tilde{A}_{NSq}$ and $\tilde{B}_{NSq}$ are the wave-combined Horwitz-Thompson estimators of the sum of the degrees of all vertices in $G_n$ and the number of vertices in $G_n$ having positive degree, respectively.  
+  $$\tilde{A}_{NSq} = \sum\limits_{w = 1}^d \sum\limits_{j \in \text{ wave } w \text{ of } q} 1 \text{   and   } \tilde{B}_{NSq} = \sum\limits_{w = 1}^d \sum\limits_{j \in \text{ wave } w \text{ of } q} \frac{1}{d_j}$$
+  
+## Properties {.smaller}
+
+**Conditions:**
+
+1. The size of a $d$-wave patch has its third absolute moment bounded above in probability.  
+2. The variances of both the size of a $d$-wave patch and the number of non-seeds per first neighbor for a $d-$wave patch are bounded below in probability.
+3. The expectaion of the excess degree of each neighbor of a random seed is independent of the  degree of the seed (to order $o_p(1)$)
+
+**Theorem:**
+
+(i) Suppose that the degree distribution of $G$ has a positive variance and a finite fourth moment. Also suppose that under the mechanism generating a degree sequence and $G_n$, C1 and C2 are satisfied. Then the LSMI estimator is asymptotically normal as $n$ and $m$ tend to $\infty$ with $m \le n/2$.
+(ii) If either $d = 1$ or $d > 1$ and C3 holds, then the LSMI estimator is consistent for the mean degree of G.
+
+## This is complicated
+
+<img src="images/mind_blown.gif" height=200 /> <br/>
+
+
+- Variability among LSMIs is high - due to sampling scheme being variable?
+- How does the variance of the estimator compare to the expected variance? (Does this even really work?)
+- How do we reconcile these $T$ bootstrap distributions?
+- Tuning - have to choose a seed-wave ($w$ and $d$) combination, choice of **two** tuning parameters, which may also have sensitivy to interaction effects
+
+# Here's an idea...
+
+## Something simpler
 
 ## Algorithm
 
 ## Properties
 
-# Simulated examples
+## Simulated examples
+
+# Apples to apples
 
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.2/jquery.min.js"></script>
 <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.4/jquery-ui.min.js"></script>
