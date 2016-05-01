@@ -26,10 +26,9 @@ sample_graph <- function(graph) {
     count <<- count + b
     
     ## remove graph attributes for unioning
-    subgraph <- delete_graph_attr(subgraph, "name")
-    subgraph <- delete_graph_attr(subgraph, "type")
-    subgraph <- delete_graph_attr(subgraph, "loops")
-    subgraph <- delete_graph_attr(subgraph, "m")
+    for(attr in graph_attr_names(subgraph)) {
+      subgraph <- delete_graph_attr(subgraph, attr)
+    }
     
     return(subgraph)
   })
@@ -72,7 +71,7 @@ gbb <- function(graph, B) {
   #for 1, ..., B get T*
   for(i in seq_len(B)) {
     graph_star <- sample_graph(graph)
-    T_star[i] <- sum(degree(graph))/length(V(graph))
+    T_star[i] <- sum(degree(graph_star))/length(V(graph_star))
   }
   return(T_star)
 }
