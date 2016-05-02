@@ -24,10 +24,34 @@ emp_dist %>%
   group_by(B, L, m, d) %>%
   do(sbb = bootdeg(sam.out = .$lsmi[[1]], n.boot = .$B)) -> snowballbb 
 
+select_empd <- function(sbb) {
+  empd <- sbb$empd[[1]]
+  if("empd.seeds" %in% names(empd)) {
+    res <- empd$empd.seeds
+  } else {
+    res <- empd$empd.nw.p0sEkb
+  }
+  return(res)
+}
+
+snowballbb %>%
+  group_by(B, L, m, d) %>%
+  do(data.frame(T_n = snowboot:::bootmeans_from_bootdegdistrib(select_empd(.$sbb[[1]])))) -> sbb_T
+
 ## gbb -----------------------
+## !!! This doesn't work, p_hat is incorrect !!!
 gbb_T <- gbb(graph, B)
 
 ## plots
+library(ggplot2)
+
 plot(graph, vertex.size = 3, vertex.color="steelblue", vertex.label=NA, vertex.frame.color="white")
 
-save(graph, file="written/apples_to_apples.RData")
+sbb_T %>%
+  ggplot() +
+  geom_boxplot(aes(factor(d), T_n)) +
+  facet_wrap(~m)
+
+ggplot() + geom_boxplot(aes("", gbb_T))
+
+save(sbb_T, gbb_T, graph, file="data/apples_to_apples.RData")

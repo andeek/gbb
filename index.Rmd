@@ -43,14 +43,14 @@ Let
 - $G_n$ be an observed realization of $G$ of order $n$ s.t. as $n \rightarrow \infty$, the joint degree distributions of $G_n$ approach the joint degree distribution of $G$.
 - $d_1, \dots, d_n$ be the observed degrees of the vertices in $G_n$.
  
- **Goal**: Estimate the population mean degree of $G$, $\mu(G)$ using a block bootstrap.
+ **Goal**: Estimate some statistic $T_n$ of $G$ using a block bootstrap.
 
 # A snowball's chance...
 
 ## Overview
 
 - "Using the bootstrap for statistical inference on random graphs", Thompson, et. al. (2016); `snowboot` package on CRAN
-- Estimation of mean degree from a sample of vertices using a *patchwork* sampling method - "labelled snowball sampling with multiple inclusions (LSMI)", from survey sampling
+- Estimation of mean degree of $G$, $T_n = \mu(G)$, from a sample of vertices using a *patchwork* sampling method - "labelled snowball sampling with multiple inclusions (LSMI)", from survey sampling
 - *seeds* $=$ initial random sample of single vertices  
   *patch* $=$ formed by following paths of connected vertices emanating from the seed up to a certain distance  
   *wave* $=$ increments in distance  
@@ -110,13 +110,19 @@ Where
 - Variability among LSMIs is high - due to sampling scheme being variable?
 - How does the variance of the estimator compare to the expected variance? (Does this even really work?)
 - How do we reconcile these $T$ bootstrap distributions?
-- Tuning - have to choose a seed-wave ($w$ and $d$) combination, choice of **two** tuning parameters, which may also have sensitivy to interaction effects
+- Tuning - have to choose a seed-wave ($w$ and $d$) combination, choice of **two** tuning parameters, which may also have sensitivy to interaction effects.
+- Extensibility -  how hard is it to extend this to other statistics?
 
 # Here's an idea...
 
 ## Something simpler
 
-## Algorithm
+<div id="simpler"></div>
+
+Let's try to estimate $T_n =$ the # of edges in $G$ $= e$ to start.
+
+## Algorithm {.smaller}
+
 **Data**: graph $G_n$; average block size, $m = \frac{1}{n}\sum\limits_{i =1}^n \{d_i + 1\}$; number of blocks, $k = \lfloor\frac{n}{m}\rfloor$; intra-block connection probability, $\hat{p}$.  
 **Result**: $B$ estimates of $T_n$  
 **for** $i = 1, \dots, B$ **do**    
@@ -128,24 +134,34 @@ Where
 &nbsp;&nbsp;&nbsp;&nbsp;Calculate $T_n^*$ for $G^*_i$.  
 **end**    
 
+$$T_n^* = |E(G^*_i)| = e^*_i$$
 
 ## Properties
 
 $\hat{p} = \frac{2(m - 2)e}{nm(n-m)}$ 
 
+See [Appendix](#19) for details.
+
 ## Simulated examples
 
 ## Thoughts
 
-- Could extend this procedure using a tuning parameter, $d$, the distance to define a block. Currently, $d = 1$. Would need to adjust $\hat{p}$ accordingly.
-
-# Apples to apples
+- Could extend this procedure using a tuning parameter, $d$, the distance to define a block. 
+    - Currently, $d = 1$. Would need to adjust $\hat{p}$ and $m$ accordingly.
+    - This could be useful for different statistics $T_n$ that we are interested in (like number of triangles, mean degree, etc.)
+- Variance properties/asymptotics unclear
+- Compare to LSMI (would need corresponding $\hat{p}$ for unbiased estimate of $\mu(G)$)
 
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.2/jquery.min.js"></script>
 <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.4/jquery-ui.min.js"></script>
 <script src="http://d3js.org/d3.v3.min.js"></script>
 <script src="scripts/neighborhood.js"></script>
+<script src="scripts/simpler.js"></script>
 <link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.4/themes/smoothness/jquery-ui.css">
 <link rel="stylesheet" type="text/css" href="style/d3.css">
+
+# Appendix
+
+## Properties details
 
 ## References {.smaller}

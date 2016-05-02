@@ -3,7 +3,7 @@
   stroke-width: 1.5px;
 }
 
-.link {
+.pot_link, .link {
   stroke: #999;
   stroke-opacity: .6;
 }

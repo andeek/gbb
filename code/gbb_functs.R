@@ -42,7 +42,7 @@ sample_graph <- function(graph) {
   
   edges_add <- apply(match_blocks, 1, function(match){
     match_nodes <- expand.grid(V(blocks[[match["x"]]])$name, V(blocks[[match["y"]]])$name)
-    as.character(t(match_nodes[sample(1:nrow(match_nodes), size = nrow(match_nodes)*p, replace = FALSE), ]))
+    as.character(t(match_nodes[rbinom(nrow(match_nodes), 1, p) == 1, ]))
   })
   
   if(class(edges_add) == "list") {
@@ -64,7 +64,19 @@ graph_add <- function(...) {
   graph.empty(directed = FALSE) + unlist(nodes) + edges(unlist(links))
 }
 
-gbb <- function(graph, B) {
+gbb_e <- function(graph, B) {
+  require(igraph)
+  T_star <- rep(NA, B)
+  
+  #for 1, ..., B get T*
+  for(i in seq_len(B)) {
+    graph_star <- sample_graph(graph)
+    T_star[i] <- length(E(graph_star))
+  }
+  return(T_star)
+}
+
+gbb_mu <- function(graph, B) {
   require(igraph)
   T_star <- rep(NA, B)
   
