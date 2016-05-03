@@ -174,11 +174,20 @@ T_star_er %>%
 Try instead, $S_n^* = (T_n^* - \mathbb{E}_*(T_n^*))/\sqrt{\text{Var}_*(T_n^*)}$
 
 ```{r sim_plots_2, echo=FALSE, message=FALSE, warning=FALSE}
-load("data/erdos_renyi_adj.RData")
-T_star_er_adj %>%
+library(igraph)
+graphs_er %>% 
+  group_by(n) %>%
+  do(data.frame(en = length(E(.$graph[[1]])),
+         m = mean(degree(.$graph[[1]]) + 1),
+         m2 = mean((degree(.$graph[[1]]) + 1)^2))) %>%
+  mutate(k = floor(n/m)) %>%
+  mutate(var_star = ifelse(k <= 1, 1, k*m2 - 4*k/n^2*en^2 - 4*(n-2*k)^2/(k*(k-1)*m^2*n^2)*en^2 + 2*(n-2*k)/n*en)) -> graphs_er_details
+
+T_star_er %>%
+  left_join(graphs_er_details) %>%
   ggplot() +
   geom_vline(aes(xintercept = 0), alpha = .5) +
-  geom_histogram(aes((res))) +
+  geom_histogram(aes((res - en)/sqrt(var_star))) +
   facet_wrap(~n) +
   theme_bw() +
   xlab(expression(paste(S[n],"*")))
