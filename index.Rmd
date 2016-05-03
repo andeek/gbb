@@ -171,7 +171,7 @@ T_star_er %>%
 
 ## Adjusted statistic
 
-Try instead, $S_n^* = (T_n^* - \mathbb{E}_*(T_n^*))/\sqrt{[\text{Var}_*(T_n^*)]^*}$
+Try instead, $S_n^* = (T_n^* - \mathbb{E}_*(T_n^*))/\sqrt{\text{Var}_*(T_n^*)}$
 
 ```{r sim_plots_2, echo=FALSE, message=FALSE, warning=FALSE}
 load("data/erdos_renyi_adj.RData")
