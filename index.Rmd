@@ -15,7 +15,7 @@ nocite: |
 ## Preliminaries and notation
 
 - A graph $G$ is a mathematical object that consists of a set of vertices (nodes), $V(G)$ and a set of edges (links), $E(G)$. Let $e_{ij} \in E(G)$ denote the edge between vertices $i, j \in V(G)$.
-- Throughout, $n = |V(G)|$ is the number of vertices in $G$ and  $e = |E(G)|$ the number of edges.
+- Throughout, $|V(G)|$ is the number of vertices in $G$ and  $|E(G)|$ the number of edges.
 - The *degree* of vertex $i \in V(G)$, $d_i$ is the number of edges that are connected to vertex $i$.
 - We consider *undirected* ($e_{ij} = e_{ji}$) and *loopless* ($i \not= j \forall e_{ij} \in E(G)$) graphs.
 - The distance $dist(i, j)$ is the minimum number of edges in a connected path from $i$ to $j$ in $G$.
@@ -138,18 +138,59 @@ $$T_n^* = |E(G^*_i)| = e^*_i$$
 
 ## Properties
 
-$\hat{p} = \frac{2(m - 2)e}{nm(n-m)}$ 
+For $T_n = e$, if $\hat{p} = \frac{2(n-2k)}{k(k-1)m^2n} e_n$ where $e_n = |E(G_n)|$ then
 
-See [Appendix](#19) for details.
+- $\mathbb{E}_*\left(T_n^*|G_n\right) = e_n$. 
+- $\text{Var}_*\left(T_n^*|G_n\right) = \frac{k}{n}\sum\limits_{i = 1}^n(|E(B_i)|^2) - \frac{4k}{n^2} e_n^2 - \frac{4(n-2k)^2}{k(k-1)m^2n^2}e_n^2 + \frac{2(n-2k)}{n}e_n$. 
 
-## Simulated examples
+<img src="images/ew.gif" height=200/>
+
+See [Appendix](#20) for details.
+
+## Simulated examples {.smaller}
+Simulated Erdos-Renyi graphs of size $n = 10, 50, 100, \dots, 500$ and used the "simple" block scheme to estimate the distribution of $T_n = e_n$.
+
+```{r sim_plots, echo=FALSE, message=FALSE, warning=FALSE}
+## plots -----------------
+library(ggplot2)
+library(dplyr)
+load("data/erdos_renyi.RData")
+
+T_star_er %>%
+  group_by(n) %>%
+  mutate(boot_mean = mean(res),
+            boot_var = mean((res - boot_mean)^2),
+            MSE = mean((res - e)^2)) %>%
+  ggplot() +
+  geom_vline(aes(xintercept = 0), alpha = .5) +
+  geom_histogram(aes(res - e)) +
+  facet_wrap(~n, scales="free_x") +
+  theme_bw() +
+  xlab(expression(paste(T[n],"*" - e[n])))
+```
+
+## Adjusted statistic
+
+Try instead, $S_n^* = (T_n^* - \mathbb{E}_*(T_n^*))/\sqrt{[\text{Var}_*(T_n^*)]^*}$
+
+```{r sim_plots_2, echo=FALSE, message=FALSE, warning=FALSE}
+load("data/erdos_renyi_adj.RData")
+T_star_er_adj %>%
+  ggplot() +
+  geom_vline(aes(xintercept = 0), alpha = .5) +
+  geom_histogram(aes((res))) +
+  facet_wrap(~n) +
+  theme_bw() +
+  xlab(expression(paste(S[n],"*")))
+```
 
 ## Thoughts
 
 - Could extend this procedure using a tuning parameter, $d$, the distance to define a block. 
     - Currently, $d = 1$. Would need to adjust $\hat{p}$ and $m$ accordingly.
     - This could be useful for different statistics $T_n$ that we are interested in (like number of triangles, mean degree, etc.)
-- Variance properties/asymptotics unclear
+- Need to look at examples with different graph generation mechanisms
+- Variance properties/asymptotics/limiting distribution unclear
 - Compare to LSMI (would need corresponding $\hat{p}$ for unbiased estimate of $\mu(G)$)
 
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.2/jquery.min.js"></script>
@@ -162,6 +203,51 @@ See [Appendix](#19) for details.
 
 # Appendix
 
-## Properties details
+## Properties details {.smaller}
+For $\hat{p} = \frac{2(n-2k)}{k(k-1)m^2n} e_n$, where $e_w^*$ denotes the edges within blocks in the bootstrap sample and $e_b^*$ denotes the edges between blocks in the bootstrap sample.
+
+\[
+\begin{aligned}
+\mathbb{E}_*\left(T_n^*|G_n\right) &= \mathbb{E}_*\left(e^*|G_n\right) \\
+&= \mathbb{E}_*\left(e_w^* + e_b^*|G_n\right) \\
+&= \sum\limits_{i = 1}^k \mathbb{E}_*\left(|E(B^*_i)|\right) + \sum\limits_{i = 1}^{k-1}\sum\limits_{j = i + 1}^k\mathbb{E}_*\left(\text{ # edges between } B^*_i \text{ and } B^*_j\right) \\
+&= \frac{k}{n} \sum\limits_{i = 1}^n|E(B_i)| + \frac{k(k-1)}{2} \left(\frac{1}{n}\sum\limits_{i = 1}^n |V(B_i)|\right)^2 \hat{p} \\
+&= \frac{2k}{n} e_n + \frac{k(k-1)}{2}m^2 \frac{2(n-2k)}{k(k-1)m^2n} e_n \\
+&= e_n
+\end{aligned}
+\]
+
+Provided $k > 1$, and $\hat{p} < 1$. A sufficient (but not necessary condition for $\hat{p} < 1$, would be $n < k(k-1)m^2 + 2k \approx n(n-m) + 2n/m$. In other words, $n - m + 2/m > 1$ is approximately sufficient for $\hat{p} < 1$, and is a very mild condition.
+
+## Properties details (Cont'd) {.smaller}
+
+\[
+\begin{aligned}
+\text{Var}_*(T_n^*|G_n) &= \text{Var}_*(e_w^* + e_b^*|G_n) \\
+&= \text{Var}_*(e_w^*|G_n) + \text{Var}_*(e_b^*|G_n) + \text{Cov}_*(e_w^*, e_b^*|G_n) \\
+~\\
+\text{Var}_*(e_w^*|G_n) &= \text{Var}_*\left(\sum\limits_{i = 1}^k |E(B_i^*)||G_n\right) \\
+&= \sum\limits_{i = 1}^k \sum\limits_{j = 1}^k\text{Cov}_*(|E(B_i^*)|, |E(B_j^*)||G_n) \\
+&= \sum\limits_{i = 1}^k\text{Var}_*( |E(B_i^*)||G_n) \\
+&= k\mathbb{E}_*((|E(B_i^*)| - \mathbb{E}_*(|E(B_i^*)||G_n))^2|G_n) \\
+&= \frac{k}{n}\sum\limits_{i = 1}^n\left(|E(B_i^*)| - \frac{2}{n}e_n\right)^2 \\
+&= \frac{k}{n}\sum\limits_{i = 1}^n|E(B_i^*)|^2 - \frac{4k}{n^2}e_n^2
+\end{aligned}
+\]
+
+## Properties details (Cont'd) {.smaller}
+
+\[
+\begin{aligned}
+\text{Var}_*(e_b^*|G_n) &= \text{Var}_*\left(\sum\limits_{i = 1}^{k-1} \sum\limits_{j = i + 1}^{k}(\text{ # edges between } B_i^* \text{ and } B_j^*)|G_n\right) \\
+&= \sum\limits_{i = 1}^{k-1} \sum\limits_{j = i + 1}^{k}\sum\limits_{l = 1}^{k-1} \sum\limits_{m = i + 1}^{k}\text{Cov}_*\left(\text{ # edges btw } B_i^* \text{ and } B_j^*, \text{ # edges btw } B_l^* \text{ and } B_m^*|G_n\right) \\
+&= 2 \sum\limits_{i = 1}^{k-1} \sum\limits_{j = i + 1}^{k}\text{Var}_*\left(\text{ # edges between } B_i^* \text{ and } B_j^*|G_n\right) \\
+&= k(k-1)m^2\hat{p}(1-\hat{p}) \\
+&= \frac{2(n-2k)}{n}e_n - \frac{4(n-2k)^2}{k(k-1)m^2n^2}e_n^2 \\
+~\\
+~\\
+\text{Cov}_*(e_w^*, e_b^*|G_n) &= 0
+\end{aligned}
+\]
 
 ## References {.smaller}

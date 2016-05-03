@@ -11,7 +11,7 @@ sample_graph <- function(graph) {
   D <- degree(graph)
   m <- mean(D + 1)
   k <- floor(n/m)
-  p <- 2*(m - 2)*length(E(graph))/(m*(n - m)*n)
+  p <- 2*length(E(graph))*(n-2*k)/(k*(k-1)*m^2*n)
   index <- sample(1:n, k)
   count <- 1
 
@@ -72,6 +72,30 @@ gbb_e <- function(graph, B) {
   for(i in seq_len(B)) {
     graph_star <- sample_graph(graph)
     T_star[i] <- length(E(graph_star))
+  }
+  return(T_star)
+}
+
+gbb_e_adj <- function(graph, B) {
+  require(igraph)
+  T_star <- rep(NA, B)
+  
+  ## constants
+  n <- length(V(graph))
+  en <- length(E(graph))
+  D <- degree(graph)
+  m <- mean(D + 1)
+  m2 <- mean((D + 1)^2)
+  k <- floor(n/m)
+  
+  #for 1, ..., B get T**
+  for(i in seq_len(B)) {
+    graph_star <- sample_graph(graph)
+    
+    var_star <- ifelse(k <= 1, 1, k*m2 - 4*k/n^2*en^2 - 4*(n-2*k)^2/(k*(k-1)*m^2*n^2)*en^2 + 2*(n-2*k)/n*en)
+    var_star <- ifelse(var_star < 0, 1, var_star)
+    
+    T_star[i] <- (en - length(E(graph)))/sqrt(var_star)
   }
   return(T_star)
 }
